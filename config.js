@@ -6,6 +6,7 @@ config.port = 3000;
 config.auth = false;
 
 //Database
+config.host = 'localhost'
 config.database = 'cherry';
 config.username = 'root';
 config.password = 'soksunae';

@@ -14,8 +14,10 @@ app.use(bodyParser.urlencoded({
 
 var Users = require('./Routes/Users');
 var api = require('./api.js');
+var remote = require('./Routes/Remote');
 app.use('/users',Users);
 app.use('/api', api);
+app.use('/remote', remote);
 app.use(express.static(__dirname + '/uploads'));
 
 
