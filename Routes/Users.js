@@ -70,7 +70,7 @@ users.post('/login', function(req, res) {
     database.connection.getConnection(function(err, connection) {
         if (err) {
             appData["error"] = 1;
-            appData["data"] = "Internal Server Error";
+            appData["data"] = "Internal Server Error!!!";
             res.status(500).json(appData);
         } else {
             connection.query('SELECT * FROM users WHERE email = ?', [email], function(err, rows, fields) {

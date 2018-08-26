@@ -1,6 +1,6 @@
 var config = {};
 
-config.port = 3000;
+config.port = 3306;
 
 //Authentication
 config.auth = false;
@@ -9,7 +9,7 @@ config.auth = false;
 config.host = 'localhost'
 config.database = 'cherry';
 config.username = 'root';
-config.password = 'soksunae';
+config.password = '';
 config.table_prefix = '';
 
 //Pagination
