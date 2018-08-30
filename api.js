@@ -146,7 +146,8 @@ module.exports = (function() {
 			else
 				var previous = Number(page);
 
-			var read_query = "SELECT * FROM `" + ( TABLE_PREFIX + req.params.table ) + "` LIMIT "+page_limit+" OFFSET "+offset;
+			// var read_query = "SELECT * FROM `" + ( TABLE_PREFIX + req.params.table ) + "` LIMIT "+page_limit+" OFFSET "+offset;
+			var read_query = "SELECT * FROM `" + ( TABLE_PREFIX + req.params.table ) + "`";
 		} else {
 			var read_query = "SELECT * FROM `" + ( TABLE_PREFIX + req.params.table ) + "`";
 		}
