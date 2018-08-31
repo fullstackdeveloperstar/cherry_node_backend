@@ -55,6 +55,15 @@ app.post('/upload', function (req, res) {
     });
 });
 
-app.listen(port,function(){
+var server = require('http').createServer(app);
+var io = require('socket.io')(server);
+io.on('connection', function(socket){ 
+    socket.on('message', (message) => {
+        console.log(message);
+        io.emit('message', {type: 'new-message', text: message});
+    })
+});
+
+server.listen(port,function(){
     console.log("Server is running on port: "+port);
 });
