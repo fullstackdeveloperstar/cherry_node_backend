@@ -26,6 +26,52 @@ module.exports = (function() {
 		return sequelize.getQueryInterface().escape(string);
 	};
 
+	//update status by userid
+	router.put('/contactsupdate/:id', function(req, res) {
+		sequelize.query("SHOW KEYS FROM `contacts` WHERE Key_name = 'PRIMARY'", { type: sequelize.QueryTypes.SELECT})
+		.then(function(keys) {
+			var primary_key = keys[0].Column_name;
+			if(JSON.stringify(req.body) == '{}') {
+				res.status(200);
+				res.json({
+					"success" : 0,
+					"message" : "Parameters missing"
+				});
+				return false;
+			}
+			var update_string = '';
+			Object.keys(req.body).forEach(function(key, index) {
+				var val = req.body[key];
+				update_string += "`" + key + "` = " + mysql_clean(val); 
+				if(Object.keys(req.body).length != (index+1)) {
+					update_string += ',';
+				}
+			});
+			sequelize.query("UPDATE `contacts` SET " + update_string + " WHERE `user_id` = "+mysql_clean(req.params.id), { type: sequelize.QueryTypes.UPDATE})
+			.then(function() {
+				res.status(200);
+				res.json({
+					"success" : 1,
+					"message" : "Updated"
+				});
+			})
+			.catch( function(err) {
+				res.status(404);
+				res.send({
+					"success" : 0,
+					"message" : err.message
+				});
+			});
+		})
+		.catch( function(err) {
+			res.status(404);
+			res.send({
+				"success" : 0,
+				"message" : err.message
+			});
+		});
+	});
+
 	router.use(function(req, res, next) {
 		
 	    var token = req.body.token || req.headers['token'];
@@ -253,6 +299,10 @@ module.exports = (function() {
 			});
 		});
 	});
+
+
+	
+
 
 	return router;
 
