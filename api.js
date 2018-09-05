@@ -72,6 +72,42 @@ module.exports = (function() {
 		});
 	});
 
+	router.get('/last/:table', function(req, res) {
+		sequelize.query("SHOW KEYS FROM `"+TABLE_PREFIX+req.params.table+"` WHERE Key_name = 'PRIMARY'", { type: sequelize.QueryTypes.SELECT})
+		.then(function(keys) {
+			var primary_key = keys[0].Column_name;
+			sequelize.query("SELECT * FROM `"+TABLE_PREFIX+req.params.table+"`  ORDER BY id DESC  LIMIT 1", { type: sequelize.QueryTypes.SELECT})
+			.then(function(rows) {
+				if(!rows.length) {
+					res.status(404);
+					res.json({
+						"success" : 0,
+						"data" : "No rows found"
+					});
+				}
+				res.status(200);
+				res.json({
+					"success" : 1,
+					"data" : rows
+				});
+			})
+			.catch( function(err) {
+				res.status(404);
+				res.send({
+					"success" : 0,
+					"message" : err.message
+				});
+			});
+		})
+		.catch( function(err) {
+			res.status(404);
+			res.send({
+				"success" : 0,
+				"message" : err.message
+			});
+		});
+	});
+
 	router.use(function(req, res, next) {
 		
 	    var token = req.body.token || req.headers['token'];
@@ -177,6 +213,9 @@ module.exports = (function() {
 		});
 	});
 
+
+
+
 	//Read 
 	router.get('/:table', function(req, res) {
 		if(paginate) {
@@ -270,6 +309,8 @@ module.exports = (function() {
 		});
 	});
 
+
+	
 	//Delete by ID 
 	router.delete('/:table/:id', function(req, res) {
 		sequelize.query("SHOW KEYS FROM `"+TABLE_PREFIX+req.params.table+"` WHERE Key_name = 'PRIMARY'", { type: sequelize.QueryTypes.SELECT})
