@@ -71,7 +71,8 @@ io.on('connection', function(socket){
                         if (!err) {
                             
                             if(rows.length == 0) {
-                                var sql = "CREATE TABLE `chart_" + message.staffId + "_" + message.userId +"` (`id` int(11) NOT NULL,`staff_id` int(11) NOT NULL,`user_id` int(11) NOT NULL,`message_type` int(11) NOT NULL,`message` text NOT NULL,`updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP) ENGINE=InnoDB DEFAULT CHARSET=latin1; ALTER TABLE `chart_"+message.staffId+ "_"+message.userId + "` ADD PRIMARY KEY (`id`);ALTER TABLE `chart_" + message.staffId + "_" + message.userId + "` MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;";
+
+                                var sql = "CREATE TABLE `chart_" + message.staffId + "_" + message.userId +"` (`id` int(11) NOT NULL,`staff_id` int(11) NOT NULL,`user_id` int(11) NOT NULL,`message_type` varchar(30) NOT NULL,`message` text NOT NULL, `isMedia` int(11) NOT NULL DEFAULT '0', `updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP) ENGINE=InnoDB DEFAULT CHARSET=latin1; ALTER TABLE `chart_"+message.staffId+ "_"+message.userId + "` ADD PRIMARY KEY (`id`);ALTER TABLE `chart_" + message.staffId + "_" + message.userId + "` MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;";
                                 connection.query(sql, function(error, con){
 
                                 });
@@ -90,7 +91,9 @@ io.on('connection', function(socket){
                 if (err) {
                    
                 } else {
-                    var sql = "INSERT INTO `chart_"+message.staffId+"_"+message.userId+"` (`id`, `staff_id`, `user_id`, `message_type`, `message`, `updated`) VALUES (NULL, "+message.staffId+", "+message.userId+", 1, '"+message.msg+"', CURRENT_TIMESTAMP);"
+                    var isMedia = message.isMedia == undefined || !message.isMedia   ? "0": "1";
+                    console.log('is_media:     ' + isMedia);
+                    var sql = "INSERT INTO `chart_"+message.staffId+"_"+message.userId+"` (`id`, `staff_id`, `user_id`, `message_type`, `message` , `isMedia` , `updated`) VALUES (NULL, "+message.staffId+", "+message.userId+", '" + message.type + "', '"+message.msg+"', "+ isMedia +", CURRENT_TIMESTAMP);"
                     connection.query(sql, function(err, rows, fields) {
                         if(!err){
 
