@@ -64,7 +64,7 @@ remotedb.get('/getUserProfile/:id', function(req,res) {
             appData["data"] = "Internal Server Error";
             res.status(500).json(appData);
         } else {
-            connection.query('SELECT *FROM pheramor_user_profile where id='+req.params.id, function(err, rows, fields) {
+            connection.query('SELECT *FROM pheramor_user_profile where user_id='+req.params.id, function(err, rows, fields) {
                 if (!err) {
                     appData["error"] = 0;
                     appData["data"] = rows;

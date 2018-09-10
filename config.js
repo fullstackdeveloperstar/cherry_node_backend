@@ -9,7 +9,7 @@ config.auth = false;
 config.host = 'localhost'
 config.database = 'cherry';
 config.username = 'root';
-config.password = 'soksunae';
+config.password = '';
 config.table_prefix = '';
 
 //Pagination
