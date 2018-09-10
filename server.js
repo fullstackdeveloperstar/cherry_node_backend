@@ -111,6 +111,9 @@ io.on('connection', function(socket){
                 if (err) {
                    
                 } else {
+                    if(message.staffId == '') {
+                        message.staffId = -1;
+                    }
                     var isMedia = message.isMedia == undefined || !message.isMedia   ? "0": "1";
                     console.log('is_media:     ' + isMedia);
                     var sql = "INSERT INTO `chart` (`id`, `staff_id`, `user_id`, `message_type`, `message` , `isMedia` , `updated`) VALUES (NULL, "+message.staffId+", "+message.userId+", '" + message.type + "', '"+message.msg+"', "+ isMedia +", CURRENT_TIMESTAMP);"
