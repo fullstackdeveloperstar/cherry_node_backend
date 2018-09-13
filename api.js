@@ -72,11 +72,11 @@ module.exports = (function() {
 		});
 	});
 
-	router.get('/last/:table', function(req, res) {
+	router.get('/last/:table/:userId', function(req, res) {
 		sequelize.query("SHOW KEYS FROM `"+TABLE_PREFIX+req.params.table+"` WHERE Key_name = 'PRIMARY'", { type: sequelize.QueryTypes.SELECT})
 		.then(function(keys) {
 			var primary_key = keys[0].Column_name;
-			sequelize.query("SELECT * FROM `"+TABLE_PREFIX+req.params.table+"`  ORDER BY id DESC  LIMIT 1", { type: sequelize.QueryTypes.SELECT})
+			sequelize.query("SELECT * FROM `"+TABLE_PREFIX+req.params.table+"`WHERE user_id=" + req.params.userId + "  ORDER BY id DESC  LIMIT 1", { type: sequelize.QueryTypes.SELECT})
 			.then(function(rows) {
 				if(!rows.length) {
 					res.status(404);

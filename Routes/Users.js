@@ -3,6 +3,7 @@ var users = express.Router();
 var database = require('../Database/database');
 var cors = require('cors')
 var jwt = require('jsonwebtoken');
+var md5 = require('md5');
 var token;
 
 users.use(cors());
@@ -80,15 +81,15 @@ users.post('/login', function(req, res) {
                     res.status(400).json(appData);
                 } else {
                     if (rows.length > 0) {
-                        if (rows[0].password == password) {
+                        if (rows[0].password == md5(password)) {
                             
                             let token = jwt.sign(rows[0], process.env.SECRET_KEY, {
-                                expiresIn: 1440
+                                expiresIn: 14400
                             });
 
-                            connection.query('UPDATE `users` SET token="'+ token +'" WHERE id="'+ rows[0].id +'"', function(error){
-                                console.log(error);
-                            });
+                            // connection.query('UPDATE `users` SET token="'+ token +'" WHERE id="'+ rows[0].id +'"', function(error){
+                            //     console.log(error);
+                            // });
 
                             appData.error = 0;
                             appData["token"] = token;
