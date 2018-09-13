@@ -229,8 +229,8 @@ users.post('/changepassword', function (req, res) {
                     res.status(200).json(appData);
                 } else {
                   if (rows.length > 0) {
-                      if (rows[0].password == currentpwd) {
-                        connection.query('UPDATE users set password="' + newpwd + '" WHERE id="' + userId + '"', function(err, rows, fields){
+                      if (rows[0].password == md5(currentpwd)) {
+                        connection.query('UPDATE users set password="' + md5(newpwd) + '" WHERE id="' + userId + '"', function(err, rows, fields){
                             if(err){
                                 console.log(err);
                                 appData["error"] = 0;
@@ -241,16 +241,18 @@ users.post('/changepassword', function (req, res) {
                             appData["error"] = 1;
                             appData["data"] = "password is updated.";
                             res.status(200).json(appData);
+                            return;
                         });
                       } else {
                           appData.error = 1;
                           appData["data"] = "Password does not match";
-                          res.status(204).json(appData);
+                          res.status(200).json(appData);
+                          return;
                       }
                   } else {
                       appData.error = 1;
                       appData["data"] = "Email does not exists!";
-                      res.status(204).json(appData);
+                      res.status(200).json(appData);
                   }
                 }
             });
