@@ -63,8 +63,8 @@ app.post('/upload', function (req, res) {
     });
 });
 var database = require('./Database/database');
-// var server = https.createServer(options,app);
-var server = http.createServer(app);
+var server = https.createServer(options,app);
+// var server = http.createServer(app);
 var io = require('socket.io')(server);
 io.on('connection', function(socket){ 
     socket.on('message', (message) => {
