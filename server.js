@@ -3,6 +3,13 @@ var cors = require('cors');
 var bodyParser = require("body-parser");
 var app = express();
 var multer = require('multer');
+const https = require("https");
+const fs = require("fs");
+const options = {
+  key: fs.readFileSync("server.key"),
+  cert: fs.readFileSync("server.crt")
+};
+
 
 var port = process.env.PORT || 3000;
 
@@ -55,57 +62,10 @@ app.post('/upload', function (req, res) {
     });
 });
 var database = require('./Database/database');
-var server = require('http').createServer(app);
+var server = https.createServer(options,app);
 var io = require('socket.io')(server);
 io.on('connection', function(socket){ 
     socket.on('message', (message) => {
-        console.log(message);
-        // if(message.type == 'startChat') {
-        //     console.log('create Table');
-        //     database.connection.getConnection(function(err, connection) {
-        //         var appData = {};
-        //         if (err) {
-                   
-        //         } else {
-        //             connection.query("SELECT * FROM information_schema.tables WHERE table_schema = 'cherry' AND table_name = 'chat_" + message.staffId + "_" + message.userId +"' LIMIT 1", function(err, rows, fields) {
-        //                 if (!err) {
-                            
-        //                     if(rows.length == 0) {
-
-        //                         var sql = "CREATE TABLE `chat_" + message.staffId + "_" + message.userId +"` (`id` int(11) NOT NULL,`staff_id` int(11) NOT NULL,`user_id` int(11) NOT NULL,`message_type` varchar(30) NOT NULL,`message` text NOT NULL, `isMedia` int(11) NOT NULL DEFAULT '0', `updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP) ENGINE=InnoDB DEFAULT CHARSET=latin1; ALTER TABLE `chart_"+message.staffId+ "_"+message.userId + "` ADD PRIMARY KEY (`id`);ALTER TABLE `chart_" + message.staffId + "_" + message.userId + "` MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;";
-        //                         connection.query(sql, function(error, con){
-
-        //                         });
-        //                     }
-        //                 } else {
-                            
-        //                 }
-        //             });
-        //             connection.release();
-        //         }
-        //     });
-        // }
-
-        // if(message.type == 'userTostaff' || message.type == 'staffTouser') {
-        //     database.connection.getConnection(function(err, connection) {
-        //         if (err) {
-                   
-        //         } else {
-        //             var isMedia = message.isMedia == undefined || !message.isMedia   ? "0": "1";
-        //             console.log('is_media:     ' + isMedia);
-        //             var sql = "INSERT INTO `chat_"+message.staffId+"_"+message.userId+"` (`id`, `staff_id`, `user_id`, `message_type`, `message` , `isMedia` , `updated`) VALUES (NULL, "+message.staffId+", "+message.userId+", '" + message.type + "', '"+message.msg+"', "+ isMedia +", CURRENT_TIMESTAMP);"
-        //             connection.query(sql, function(err, rows, fields) {
-        //                 if(!err){
-
-        //                 }else {
-        //                     console.log(err);
-        //                 }
-        //             });
-        //             connection.release();
-        //         }
-        //     });
-        // }
-
         if(message.type == 'userTostaff' || message.type == 'staffTouser') {
             database.connection.getConnection(function(err, connection) {
                 if (err) {
@@ -132,6 +92,8 @@ io.on('connection', function(socket){
         io.emit('message', {type: 'new-message', text: message});
     })
 });
+
+
 
 server.listen(port,function(){
     console.log("Server is running on port: "+port);
