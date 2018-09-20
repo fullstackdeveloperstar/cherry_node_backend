@@ -4,6 +4,7 @@ var bodyParser = require("body-parser");
 var app = express();
 var multer = require('multer');
 const https = require("https");
+const http = require("http");
 const fs = require("fs");
 const options = {
   key: fs.readFileSync("/var/www/server.key"),
@@ -62,7 +63,8 @@ app.post('/upload', function (req, res) {
     });
 });
 var database = require('./Database/database');
-var server = https.createServer(options,app);
+// var server = https.createServer(options,app);
+var server = http.createServer(app);
 var io = require('socket.io')(server);
 io.on('connection', function(socket){ 
     socket.on('message', (message) => {
