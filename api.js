@@ -100,7 +100,7 @@ module.exports = (function() {
 						res.status(201);
 						res.json({
 							"success" : 1,
-							"id" : id
+							"message" : id
 						});
 					})
 					.catch( function(err) {
