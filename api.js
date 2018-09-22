@@ -72,6 +72,64 @@ module.exports = (function() {
 		});
 	});
 
+
+	router.post('/contactcheck', function(req, res) {
+		sequelize.query("SHOW KEYS FROM `contacts` WHERE Key_name = 'PRIMARY'", { type: sequelize.QueryTypes.SELECT})
+		.then(function(keys) {
+			var primary_key = keys[0].Column_name;
+			if(JSON.stringify(req.body) == '{}') {
+				res.status(200);
+				res.json({
+					"success" : 0,
+					"message" : "Parameters missing"
+				});
+				return false;
+			}
+			
+			sequelize.query("SELECT * FROM contacts WHERE user_id=" + req.body.userId + " AND staff=" + req.body.staffId, { type: sequelize.QueryTypes.SELECT})
+			.then(function(rows) {
+				if(rows.length > 0) {
+					res.status(200);
+					res.json({
+						"success" : 1,
+						"message" : rows[0]['id']
+					});	
+				} else {
+					sequelize.query("INSERT INTO `contacts` (`id`, `name`, `profile_image`, `tags`, `status`, `actions`, `messages`, `date_of_creation`, `staff`, `rating`, `note`, `time`, `user_id`) VALUES (NULL, '', '', '', NULL, NULL, '', CURRENT_TIMESTAMP, '" + req.body.staffId + "', NULL, '', '0', '" + req.body.userId + "');", { type: sequelize.QueryTypes.INSERT})
+					.then(function(id) {
+						res.status(201);
+						res.json({
+							"success" : 1,
+							"id" : id
+						});
+					})
+					.catch( function(err) {
+						res.status(404);
+						res.send({
+							"success" : 0,
+							"message" : err.message
+						});
+					});
+				}
+				
+			})
+			.catch( function(err) {
+				res.status(404);
+				res.send({
+					"success" : 0,
+					"message" : err.message
+				});
+			});
+		})
+		.catch( function(err) {
+			res.status(404);
+			res.send({
+				"success" : 0,
+				"message" : err.message
+			});
+		});
+	});
+
 	router.get('/last/:table/:userId', function(req, res) {
 		sequelize.query("SHOW KEYS FROM `"+TABLE_PREFIX+req.params.table+"` WHERE Key_name = 'PRIMARY'", { type: sequelize.QueryTypes.SELECT})
 		.then(function(keys) {

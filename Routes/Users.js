@@ -10,6 +10,16 @@ users.use(cors());
 
 process.env.SECRET_KEY = "devesh";
 
+users.get('/token', function(req, res) {
+    var appData = {};
+    let token = jwt.sign({}, process.env.SECRET_KEY, {
+        expiresIn: 14400
+    });
+    appData.error = 0;
+    appData["token"] = token;
+    res.status(200).json(appData);
+});
+
 users.post('/register', function(req, res) {
 
     var today = new Date();
