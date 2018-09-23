@@ -91,6 +91,42 @@ io.on('connection', function(socket){
             });
         }
 
+        if(message.type == 'requestchat') {
+            var sql = "INSERT INTO `request` (`id`,`user_id`) VALUES (NULL, '" + message.userId + "');";
+            database.connection.getConnection(function(err, connection) {
+                if (err) {
+                   
+                } else {
+                    connection.query(sql, function(err, rows, fields) {
+                        if(!err){
+
+                        }else {
+                            console.log(err);
+                        }
+                    });
+                    connection.release();
+                }
+            });
+        }
+
+        if (message.type == 'acceptchat') {
+            var sql  =  "DELETE FROM `request` WHERE `user_id`=" + message.userId;
+            database.connection.getConnection(function(err, connection) {
+                if (err) {
+                   
+                } else {
+                    connection.query(sql, function(err, rows, fields) {
+                        if(!err){
+
+                        }else {
+                            console.log(err);
+                        }
+                    });
+                    connection.release();
+                }
+            });
+        }
+
         io.emit('message', {type: 'new-message', text: message});
     })
 });

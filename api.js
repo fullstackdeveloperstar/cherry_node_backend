@@ -95,7 +95,8 @@ module.exports = (function() {
 						"message" : rows[0]['id']
 					});	
 				} else {
-					sequelize.query("INSERT INTO `contacts` (`id`, `name`, `profile_image`, `tags`, `status`, `actions`, `messages`, `date_of_creation`, `staff`, `rating`, `note`, `time`, `user_id`) VALUES (NULL, '', '', '', NULL, NULL, '', CURRENT_TIMESTAMP, '" + req.body.staffId + "', NULL, '', '0', '" + req.body.userId + "');", { type: sequelize.QueryTypes.INSERT})
+
+					sequelize.query("INSERT INTO `contacts` (`id`, `name`, `profile_image`, `tags`, `status`, `actions`, `messages`, `date_of_creation`, `staff`, `rating`, `note`, `time`, `user_id`) VALUES (NULL, '', '', '', '2', NULL, '', CURRENT_TIMESTAMP, '" + req.body.staffId + "', NULL, '', '0', '" + req.body.userId + "');", { type: sequelize.QueryTypes.INSERT})
 					.then(function(id) {
 						res.status(201);
 						res.json({
@@ -110,6 +111,8 @@ module.exports = (function() {
 							"message" : err.message
 						});
 					});
+
+					
 				}
 				
 			})
@@ -137,7 +140,7 @@ module.exports = (function() {
 			sequelize.query("SELECT * FROM `"+TABLE_PREFIX+req.params.table+"`WHERE user_id=" + req.params.userId + "  ORDER BY id DESC  LIMIT 1", { type: sequelize.QueryTypes.SELECT})
 			.then(function(rows) {
 				if(!rows.length) {
-					res.status(404);
+					res.status(200);
 					res.json({
 						"success" : 0,
 						"data" : "No rows found"
@@ -255,7 +258,7 @@ module.exports = (function() {
 				});
 			})
 			.catch( function(err) {
-				res.status(404);
+				res.status(200);
 				res.send({
 					"success" : 0,
 					"message" : err.message
@@ -338,7 +341,7 @@ module.exports = (function() {
 			sequelize.query("SELECT * FROM `"+TABLE_PREFIX+req.params.table+"` WHERE `"+ primary_key +"` = " + mysql_clean(req.params.id), { type: sequelize.QueryTypes.SELECT})
 			.then(function(rows) {
 				if(!rows.length) {
-					res.status(404);
+					res.status(200);
 					res.json({
 						"success" : 0,
 						"data" : "No rows found"
@@ -351,7 +354,7 @@ module.exports = (function() {
 				});
 			})
 			.catch( function(err) {
-				res.status(404);
+				res.status(200);
 				res.send({
 					"success" : 0,
 					"message" : err.message
@@ -359,7 +362,7 @@ module.exports = (function() {
 			});
 		})
 		.catch( function(err) {
-			res.status(404);
+			res.status(200);
 			res.send({
 				"success" : 0,
 				"message" : err.message
